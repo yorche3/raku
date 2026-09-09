@@ -1,0 +1,37 @@
+use Test;
+
+use lib 'lib';
+use Numbers;
+
+plan 5;
+
+subtest 'sum_of_first_n_acc', {
+  plan 2;
+  is(sum_of_first_n_acc(0), 0, 'sum_of_first_n_acc 1');
+  is(sum_of_first_n_acc(3), 6, 'sum_of_first_n_acc 2');
+};
+
+subtest 'factorial_acc', {
+  plan 2;
+  is(factorial_acc(0), 1, 'factorial_acc 1');
+  is(factorial_acc(4), 24, 'factorial_acc 2');
+};
+
+subtest 'fibonacci_acc', {
+  plan 3;
+  is(fibonacci_acc(0), 0, 'fibonacci_acc 1');
+  is(fibonacci_acc(1), 1, 'fibonacci_acc 2');
+  is(fibonacci_acc(6), 8, 'fibonacci_acc 3');
+};
+
+subtest 'greatest_common_divisor_acc', {
+  plan 2;
+  is(greatest_common_divisor_acc(12, 8), 4, 'greatest_common_divisor_acc 1');
+  is(greatest_common_divisor_acc(7, 5), 1, 'greatest_common_divisor_acc 2');
+};
+
+subtest 'least_common_multiple_acc', {
+  plan 2;
+  is(least_common_multiple_acc(4, 6), 12, 'least_common_multiple_acc 1');
+  is(least_common_multiple_acc(6, 8), 24, 'least_common_multiple_acc 2');
+};

@@ -1,0 +1,37 @@
+use Test;
+
+use lib 'lib';
+use Numbers;
+
+plan 5;
+
+subtest 'sum_of_first_n_rec', {
+  plan 2;
+  is(sum_of_first_n_rec(0), 0, 'sum_of_first_n_rec 1');
+  is(sum_of_first_n_rec(3), 6, 'sum_of_first_n_rec 2');
+};
+
+subtest 'factorial_rec', {
+  plan 2;
+  is(factorial_rec(0), 1, 'factorial_rec 1');
+  is(factorial_rec(4), 24, 'factorial_rec 2');
+};
+
+subtest 'fibonacci_rec', {
+  plan 3;
+  is(fibonacci_rec(0), 0, 'fibonacci_rec 1');
+  is(fibonacci_rec(1), 1, 'fibonacci_rec 2');
+  is(fibonacci_rec(6), 8, 'fibonacci_rec 3');
+};
+
+subtest 'greatest_common_divisor_rec', {
+  plan 2;
+  is(greatest_common_divisor_rec(12, 8), 4, 'greatest_common_divisor_rec 1');
+  is(greatest_common_divisor_rec(7, 5), 1, 'greatest_common_divisor_rec 2');
+};
+
+subtest 'least_common_multiple_rec', {
+  plan 2;
+  is(least_common_multiple_rec(4, 6), 12, 'least_common_multiple_rec 1');
+  is(least_common_multiple_rec(6, 8), 24, 'least_common_multiple_rec 2');
+};

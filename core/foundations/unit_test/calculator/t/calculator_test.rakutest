@@ -1,0 +1,12 @@
+use Test;
+
+use lib 'lib';
+use Calculator;
+
+plan 5;
+
+is(addition(2, 3), 5, 'addition');
+is(subtraction(5, 2), 3, 'subtraction');
+is(multiplication(3, 4), 12, 'multiplication');
+is(division(10, 3), 3, 'division');
+is(modulus(10, 3), 1, 'modulus');
