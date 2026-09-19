@@ -59,15 +59,15 @@ plan 3;
 
 subtest 'selection_sort', {
   plan 7;
-  assert-sorts-all-cases(&selection_sort, 'selection_sort');
+  assert-sorts-all-cases(&selection-sort, 'selection_sort');
 };
 
 subtest 'bubble_sort', {
   plan 7;
-  assert-sorts-all-cases(&bubble_sort, 'bubble_sort');
+  assert-sorts-all-cases(&bubble-sort, 'bubble_sort');
 };
 
 subtest 'insertion_sort', {
   plan 7;
-  assert-sorts-all-cases(&insertion_sort, 'insertion_sort');
+  assert-sorts-all-cases(&insertion-sort, 'insertion_sort');
 };
