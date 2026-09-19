@@ -1,0 +1,73 @@
+use Test;
+
+use lib 'lib';
+use NaiveSort;
+
+# Casos de prueba de la especificación 05_Naive_Sort.md
+#
+# Caso nulo omitido: en Raku un parámetro con sigilo `@array` no admite `Nil`
+# —el compilador rechaza la llamada con «Calling f(Nil) will never work with
+# declared signature (@arr)»—, así que la entrada nula no es representable y se
+# conservan los 7 casos de la especificación.
+#
+# Aislamiento: cada caso ordena una copia (`@actual-input`) del fixture
+# compartido, porque la implementación puede ordenar in-place.
+
+my @standard-input = 5, 2, 9, 1, 5, 6;
+my @standard-output = 1, 2, 5, 5, 6, 9;
+
+my @sorted-input = 1, 2, 3, 4, 5;
+my @sorted-output = 1, 2, 3, 4, 5;
+
+my @reverse-input = 5, 4, 3, 2, 1;
+my @reverse-output = 1, 2, 3, 4, 5;
+
+my @identical-input = 7, 7, 7, 7;
+my @identical-output = 7, 7, 7, 7;
+
+my @negative-input = 3, -1, 4, -5, 0;
+my @negative-output = -5, -1, 0, 3, 4;
+
+my @single-input = 42;
+my @single-output = 42;
+
+my @empty-input;
+my @empty-output;
+
+# Cada caso es una lista de tres elementos: descripción, entrada y salida esperada.
+my @cases =
+  ['an unsorted array', @standard-input, @standard-output],
+  ['an already sorted array', @sorted-input, @sorted-output],
+  ['a reverse ordered array', @reverse-input, @reverse-output],
+  ['an array of identical elements', @identical-input, @identical-output],
+  ['an array with negative numbers', @negative-input, @negative-output],
+  ['a single element array', @single-input, @single-output],
+  ['an empty array', @empty-input, @empty-output];
+
+# Helper compartido: recibe la función a probar y el nombre del algoritmo, y
+# ejecuta todos los casos con el mensaje descriptivo del contrato.
+sub assert-sorts-all-cases($sort, Str $algorithm) {
+  for @cases -> $case {
+    my ($description, $input, $expected) = |$case;
+    my @actual-input = $input.clone;
+    is-deeply($sort(@actual-input), $expected,
+      "$algorithm should sort $description");
+  }
+}
+
+plan 3;
+
+subtest 'selection_sort', {
+  plan 7;
+  assert-sorts-all-cases(&selection-sort, 'selection_sort');
+};
+
+subtest 'bubble_sort', {
+  plan 7;
+  assert-sorts-all-cases(&bubble-sort, 'bubble_sort');
+};
+
+subtest 'insertion_sort', {
+  plan 7;
+  assert-sorts-all-cases(&insertion-sort, 'insertion_sort');
+};
