@@ -1,0 +1,51 @@
+
+use Test;
+
+use lib 'lib';
+use DataStructuresBasics;
+
+# Null case omitted: the public signatures require Int values and a defined Node,
+# so Nil is not representable as an operation input.
+
+my Int $first-value = 10;
+my Int $second-value = 20;
+my Node $first-node;
+my Node $second-node;
+
+my @initialization-output = $first-value, False;
+my @link-output = $second-value, False;
+
+my @cases = (
+    [
+        'initialize and observe value and link',
+        -> {
+            $first-node = Node.new(value => $first-value);
+            [$first-node.get-value, $first-node.get-next.defined]
+        },
+        @initialization-output,
+    ],
+    [
+        'initialize another node, link, and traverse',
+        -> {
+            $second-node = Node.new(value => $second-value);
+            $first-node.set-next($second-node);
+            [$first-node.get-next.get-value, $second-node.get-next.defined]
+        },
+        @link-output,
+    ],
+);
+
+sub assert-node-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "Node should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'Node operations', {
+    plan 2;
+    assert-node-cases();
+};

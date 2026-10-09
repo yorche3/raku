@@ -1,0 +1,73 @@
+
+use Test;
+
+use lib 'lib';
+use DataStructuresBasics;
+
+# Null case omitted: the public value parameters require Int, so Nil is not
+# representable as an operation input.
+
+my Int $first-value = 10;
+my Int $second-value = 20;
+my Int $third-value = 30;
+my Int $reuse-value = 40;
+my Queue $queue = Queue.new;
+
+my @empty-state-output = True, 0, -1, -1;
+my @fifo-output = $first-value, 3;
+my @removal-output = $first-value, $second-value, $third-value, $reuse-value, True, 0;
+my @empty-after-removal-output = -1, True;
+
+my @cases = (
+    [
+        'an empty state and failed removal',
+        { [$queue.is-empty, $queue.size, $queue.peek, $queue.dequeue] },
+        @empty-state-output,
+    ],
+    [
+        'FIFO order and a non-mutating peek',
+        -> {
+            $queue.enqueue($first-value);
+            $queue.enqueue($second-value);
+            $queue.enqueue($third-value);
+            [$queue.peek, $queue.size]
+        },
+        @fifo-output,
+    ],
+    [
+        'removal and reuse',
+        -> {
+            my $first-removed = $queue.dequeue;
+            $queue.enqueue($reuse-value);
+            [
+                $first-removed,
+                $queue.dequeue,
+                $queue.dequeue,
+                $queue.dequeue,
+                $queue.is-empty,
+                $queue.size,
+            ]
+        },
+        @removal-output,
+    ],
+    [
+        'an empty state after removal',
+        { [$queue.dequeue, $queue.is-empty] },
+        @empty-after-removal-output,
+    ],
+);
+
+sub assert-queue-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "Queue should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'Queue operations', {
+    plan 4;
+    assert-queue-cases();
+};
