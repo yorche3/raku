@@ -13,10 +13,10 @@ my Int $third-value = 30;
 my Int $reuse-value = 40;
 my Queue $queue = Queue.new;
 
-my @empty-state-output = True, 0, Nil, Nil;
+my @empty-state-output = True, 0, -1, -1;
 my @fifo-output = $first-value, 3;
 my @removal-output = $first-value, $second-value, $third-value, $reuse-value, True, 0;
-my @empty-after-removal-output = Nil, True;
+my @empty-after-removal-output = -1, True;
 
 my @cases = (
     [

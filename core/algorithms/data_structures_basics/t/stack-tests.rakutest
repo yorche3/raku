@@ -13,10 +13,10 @@ my Int $third-value = 30;
 my Int $reuse-value = 40;
 my Stack $stack = Stack.new;
 
-my @empty-state-output = True, 0, Nil, Nil;
+my @empty-state-output = True, 0, -1, -1;
 my @lifo-output = $third-value, 3;
 my @removal-output = $third-value, $reuse-value, $second-value, $first-value, True, 0;
-my @empty-after-removal-output = Nil, True;
+my @empty-after-removal-output = -1, True;
 
 my @cases = (
     [

@@ -14,11 +14,11 @@ my Int $duplicate-tail-value = 10;
 my Int $absent-value = 99;
 my LinkedList $list = LinkedList.new;
 
-my @empty-state-output = True, 0, Nil;
+my @empty-state-output = True, 0, -1;
 my @insert-output = 4, $head-value;
 my @first-deletion-output = True, 3, $head-value;
 my @absent-value-output = False, 3, $head-value;
-my @empty-list-output = True, True, True, True, 0, Nil;
+my @empty-list-output = True, True, True, True, 0, -1;
 
 my @cases = (
     [
