@@ -11,6 +11,7 @@ Los módulos de esta fase trabajan sobre **arrays mutables localmente**: las fun
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `prove6 -l t/` + módulo Test | 3 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `prove6` + módulo Test | 4 | ✅ |
 
 ---
 
@@ -18,11 +19,21 @@ Los módulos de esta fase trabajan sobre **arrays mutables localmente**: las fun
 
 ```text
 algorithms/
-└── naive_sort/                      # 05_Naive_Sort
+├── naive_sort/                      # 05_Naive_Sort
+│   ├── lib/
+│   │   └── NaiveSort.rakumod        # 3 funciones del contrato (is export)
+│   ├── t/
+│   │   └── naive_sort_tests.rakutest# 3 subtests × 7 casos
+│   ├── .gitignore                   # Ignora .precomp/
+│   └── README.md
+└── data_structures_basics/          # 06_Data_Structures_Basics
     ├── lib/
-    │   └── NaiveSort.rakumod        # 3 funciones del contrato (is export)
+    │   └── DataStructuresBasics.rakumod # 4 clases del contrato (Node, LinkedList, Stack, Queue)
     ├── t/
-    │   └── naive_sort_tests.rakutest# 3 subtests × 7 casos
+    │   ├── node-tests.rakutest
+    │   ├── linked-list-tests.rakutest
+    │   ├── stack-tests.rakutest
+    │   └── queue-tests.rakutest
     ├── .gitignore                   # Ignora .precomp/
     └── README.md
 ```
@@ -59,6 +70,10 @@ algorithms/
 # Naive Sort Tests
 cd naive_sort
 prove6 -l t/
+
+# Data Structures Basics Tests
+cd ../data_structures_basics
+prove6
 ```
 
 ---
