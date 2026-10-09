@@ -1,1 +1,79 @@
 
+use Test;
+
+use lib 'lib';
+use DataStructuresBasics;
+
+# Null case omitted: the public value parameters require Int, so Nil is not
+# representable as an operation input.
+
+my Int $first-tail-value = 10;
+my Int $second-tail-value = 20;
+my Int $head-value = 5;
+my Int $duplicate-tail-value = 10;
+my Int $absent-value = 99;
+my LinkedList $list = LinkedList.new;
+
+my @empty-state-output = True, 0, Nil;
+my @insert-output = 4, $head-value;
+my @first-deletion-output = True, 3, $head-value;
+my @absent-value-output = False, 3, $head-value;
+my @empty-list-output = True, True, True, True, 0, Nil;
+
+my @cases = (
+    [
+        'an empty state',
+        { [$list.is-empty, $list.size, $list.get-head] },
+        @empty-state-output,
+    ],
+    [
+        'insertion at both ends',
+        -> {
+            $list.insert-tail($first-tail-value);
+            $list.insert-tail($second-tail-value);
+            $list.insert-head($head-value);
+            $list.insert-tail($duplicate-tail-value);
+            [$list.size, $list.get-head]
+        },
+        @insert-output,
+    ],
+    [
+        'deletion of the first occurrence',
+        { [$list.delete($first-tail-value), $list.size, $list.get-head] },
+        @first-deletion-output,
+    ],
+    [
+        'an absent value',
+        { [$list.delete($absent-value), $list.size, $list.get-head] },
+        @absent-value-output,
+    ],
+    [
+        'emptying the list',
+        {
+            [
+                $list.delete($head-value),
+                $list.delete($second-tail-value),
+                $list.delete($duplicate-tail-value),
+                $list.is-empty,
+                $list.size,
+                $list.get-head,
+            ]
+        },
+        @empty-list-output,
+    ],
+);
+
+sub assert-linked-list-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "LinkedList should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'LinkedList operations', {
+    plan 5;
+    assert-linked-list-cases();
+};

@@ -1,1 +1,73 @@
 
+use Test;
+
+use lib 'lib';
+use DataStructuresBasics;
+
+# Null case omitted: the public value parameters require Int, so Nil is not
+# representable as an operation input.
+
+my Int $first-value = 10;
+my Int $second-value = 20;
+my Int $third-value = 30;
+my Int $reuse-value = 40;
+my Stack $stack = Stack.new;
+
+my @empty-state-output = True, 0, Nil, Nil;
+my @lifo-output = $third-value, 3;
+my @removal-output = $third-value, $reuse-value, $second-value, $first-value, True, 0;
+my @empty-after-removal-output = Nil, True;
+
+my @cases = (
+    [
+        'an empty state and failed removal',
+        { [$stack.is-empty, $stack.size, $stack.peek, $stack.pop] },
+        @empty-state-output,
+    ],
+    [
+        'LIFO order and a non-mutating peek',
+        -> {
+            $stack.push($first-value);
+            $stack.push($second-value);
+            $stack.push($third-value);
+            [$stack.peek, $stack.size]
+        },
+        @lifo-output,
+    ],
+    [
+        'removal and reuse',
+        -> {
+            my $first-removed = $stack.pop;
+            $stack.push($reuse-value);
+            [
+                $first-removed,
+                $stack.pop,
+                $stack.pop,
+                $stack.pop,
+                $stack.is-empty,
+                $stack.size,
+            ]
+        },
+        @removal-output,
+    ],
+    [
+        'an empty state after removal',
+        { [$stack.pop, $stack.is-empty] },
+        @empty-after-removal-output,
+    ],
+);
+
+sub assert-stack-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "Stack should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'Stack operations', {
+    plan 4;
+    assert-stack-cases();
+};
