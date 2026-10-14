@@ -8,7 +8,7 @@ Implementación de la especificación [01_Hello_World](https://yorche3.github.io
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`hello_world.raku`](hello_world.raku) | Código fuente: imprime `"Hello, World! from Raku"` en la salida estándar. |
+| [`hello_world.raku`](hello_world.raku) | Código fuente: imprime `"Hello, World! from Raku!"` en la salida estándar. |
 
 **Estructura de directorios esperada:**
 
