@@ -1,1 +1,1 @@
-say 'Hello, World! from Raku';
+say 'Hello, World! from Raku!';
