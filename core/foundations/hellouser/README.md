@@ -56,18 +56,18 @@ No se requieren archivos de configuración de build. El programa se ejecuta dire
 
 **ES:** El flujo del programa es:
 
-1. Imprimir `"What is your name?"` con `say` (con salto de línea).
+1. Imprimir `"Enter your name: "` con `say` (con salto de línea).
 2. Leer una línea desde `stdin` con `$*IN.get` y guardarla en `$name`.
 3. Imprimir `"Hello, <nombre>!"` interpolando la variable en la cadena.
 
 **EN:** Program flow:
 
-1. Print `"What is your name?"` with `say` (with newline).
+1. Print `"Enter your name: "` with `say` (with newline).
 2. Read a line from `stdin` with `$*IN.get` and store it in `$name`.
 3. Print `"Hello, <name>!"` interpolating the variable into the string.
 
 ```raku
-say "What is your name?";
+print "Enter your name: ";
 my $name = $*IN.get;
 say "Hello, $name!";
 ```
@@ -110,7 +110,7 @@ raku hello_user.raku
 ### Salida esperada / Expected output
 
 ```text
-What is your name?
+Enter your name: ?
 Ada
 Hello, Ada!
 ```
