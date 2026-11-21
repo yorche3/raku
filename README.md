@@ -11,7 +11,7 @@ módulo **Test** (incluido en Rakudo) y el runner **prove6**.
 | Módulo | Descripción |
 | ------ | ----------- |
 | [`core/foundations/`](core/foundations/) | **Fase 0 — Fundamentos**: `helloworld`, `hellouser`, `unit_test/calculator`, `numbers` |
-| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics` |
+| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics`, `data_structures_advanced` |
 
 ---
 
@@ -40,6 +40,10 @@ prove6 -l t/
 
 # Data Structures Basics Tests
 cd core/algorithms/data_structures_basics
+prove6
+
+# Data Structures Advanced Tests
+cd core/algorithms/data_structures_advanced
 prove6
 ```
 

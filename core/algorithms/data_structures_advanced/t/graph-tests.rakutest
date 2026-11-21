@@ -1,0 +1,233 @@
+use Test;
+
+use lib 'lib';
+use DataStructuresAdvanced;
+
+# Null case omitted: the public signatures require Int labels, so Nil is not
+# representable as an input. Failure is False for Bool operations and Nil for
+# get-neighbors; the helper reports it as Nil, distinct from the empty list ().
+# Neighbour-result isolation: List is immutable, so "modify a returned copy" is
+# not representable; the saved-result and fresh-query steps are kept.
+
+my Int $first-label = 10;
+my Int $second-label = 30;
+my Int $third-label = 50;
+my Int $fourth-label = 70;
+my Int $missing-label = 99;
+my Int $other-missing-label = 98;
+
+sub neighbors(Graph $graph, Int $label) {
+    my $result = $graph.get-neighbors($label);
+    $result.defined ?? $result.List !! Nil
+}
+
+my @empty-output = True, 0, 0, False, Nil;
+my @isolated-output = True, False, 1, 0, ();
+my @directed-output = True, True, True, False, 2, 1;
+my @duplicate-vertex-output = True, True, True, True, 2, 1, (30,);
+my @duplicate-edge-output = True, True, True, True, 2, 1, (30,);
+my @missing-endpoint-output = False, False, False, False, 2, 1, (30,), (),
+    False, False, False, False, Nil, Nil;
+my @sorted-output = True, True, True, True, (30, 50, 70), (50,), (), (), 4, 4;
+my @missing-edge-output = False, 2, 0, False;
+my @missing-vertex-output = Nil, (), 1, 0;
+my @loop-output = True, True, True, (10,), 1, 1;
+my @isolation-output = (30,), (30, 50), 3, 2;
+
+my @cases = (
+    [
+        'create empty',
+        -> {
+            my Graph $graph = Graph.new;
+            [$graph.is-empty, $graph.vertex-count, $graph.edge-count,
+                $graph.has-edge($first-label, $second-label),
+                neighbors($graph, $first-label)]
+        },
+        @empty-output,
+    ],
+    [
+        'isolated vertex',
+        -> {
+            my Graph $graph = Graph.new;
+            [$graph.add-vertex($first-label), $graph.is-empty,
+                $graph.vertex-count, $graph.edge-count,
+                neighbors($graph, $first-label)]
+        },
+        @isolated-output,
+    ],
+    [
+        'nonconsecutive labels and directed edge',
+        -> {
+            my Graph $graph = Graph.new;
+            [
+                $graph.add-vertex($first-label),
+                $graph.add-vertex($fourth-label),
+                $graph.add-edge($first-label, $fourth-label),
+                $graph.has-edge($first-label, $fourth-label),
+                $graph.has-edge($fourth-label, $first-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+            ]
+        },
+        [True, True, True, True, False, 2, 1],
+    ],
+    [
+        'duplicate vertex preserves adjacency',
+        -> {
+            my Graph $graph = Graph.new;
+            [
+                $graph.add-vertex($first-label),
+                $graph.add-vertex($second-label),
+                $graph.add-edge($first-label, $second-label),
+                $graph.add-vertex($first-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+                neighbors($graph, $first-label),
+            ]
+        },
+        @duplicate-vertex-output,
+    ],
+    [
+        'duplicate edge',
+        -> {
+            my Graph $graph = Graph.new;
+            [
+                $graph.add-vertex($first-label),
+                $graph.add-vertex($second-label),
+                $graph.add-edge($first-label, $second-label),
+                $graph.add-edge($first-label, $second-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+                neighbors($graph, $first-label),
+            ]
+        },
+        @duplicate-edge-output,
+    ],
+    [
+        'missing endpoint without mutation',
+        -> {
+            my Graph $graph = Graph.new;
+            $graph.add-vertex($first-label);
+            $graph.add-vertex($second-label);
+            $graph.add-edge($first-label, $second-label);
+            [
+                $graph.add-edge($first-label, $missing-label),
+                $graph.add-edge($missing-label, $first-label),
+                $graph.add-edge($other-missing-label, $missing-label),
+                $graph.add-edge($missing-label, $missing-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+                neighbors($graph, $first-label),
+                neighbors($graph, $second-label),
+                $graph.has-edge($first-label, $missing-label),
+                $graph.has-edge($missing-label, $first-label),
+                $graph.has-edge($other-missing-label, $missing-label),
+                $graph.has-edge($missing-label, $missing-label),
+                neighbors($graph, $other-missing-label),
+                neighbors($graph, $missing-label),
+            ]
+        },
+        @missing-endpoint-output,
+    ],
+    [
+        'sorted neighbours and counts',
+        -> {
+            my Graph $graph = Graph.new;
+            for $first-label, $second-label, $third-label, $fourth-label -> $label {
+                $graph.add-vertex($label);
+            }
+            [
+                $graph.add-edge($first-label, $fourth-label),
+                $graph.add-edge($first-label, $second-label),
+                $graph.add-edge($first-label, $third-label),
+                $graph.add-edge($second-label, $third-label),
+                neighbors($graph, $first-label),
+                neighbors($graph, $second-label),
+                neighbors($graph, $third-label),
+                neighbors($graph, $fourth-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+            ]
+        },
+        @sorted-output,
+    ],
+    [
+        'missing-edge query',
+        -> {
+            my Graph $graph = Graph.new;
+            $graph.add-vertex($first-label);
+            $graph.add-vertex($second-label);
+            [
+                $graph.has-edge($first-label, $second-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+                $graph.is-empty,
+            ]
+        },
+        @missing-edge-output,
+    ],
+    [
+        'neighbours of a missing vertex',
+        -> {
+            my Graph $graph = Graph.new;
+            $graph.add-vertex($first-label);
+            [
+                neighbors($graph, $missing-label),
+                neighbors($graph, $first-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+            ]
+        },
+        @missing-vertex-output,
+    ],
+    [
+        'self-loop and duplicate',
+        -> {
+            my Graph $graph = Graph.new;
+            $graph.add-vertex($first-label);
+            [
+                $graph.add-edge($first-label, $first-label),
+                $graph.add-edge($first-label, $first-label),
+                $graph.has-edge($first-label, $first-label),
+                neighbors($graph, $first-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+            ]
+        },
+        @loop-output,
+    ],
+    [
+        'neighbour-result isolation',
+        -> {
+            my Graph $graph = Graph.new;
+            $graph.add-vertex($first-label);
+            $graph.add-vertex($second-label);
+            $graph.add-vertex($third-label);
+            $graph.add-edge($first-label, $second-label);
+            my $saved = neighbors($graph, $first-label);
+            $graph.add-edge($first-label, $third-label);
+            [
+                $saved,
+                neighbors($graph, $first-label),
+                $graph.vertex-count,
+                $graph.edge-count,
+            ]
+        },
+        @isolation-output,
+    ],
+);
+
+sub assert-graph-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "Graph should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'Graph operations', {
+    plan 11;
+    assert-graph-cases();
+};

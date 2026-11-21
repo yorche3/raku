@@ -1,0 +1,117 @@
+use Test;
+
+use lib 'lib';
+use DataStructuresAdvanced;
+
+# Null case omitted: insert and contains require Int, so Nil is not representable
+# as an input. Failure is the Bool value False.
+
+my Int $root-value = 50;
+my Int $lower-value = 30;
+my Int $higher-value = 70;
+my Int $lower-leaf-value = 20;
+my Int $middle-leaf-value = 40;
+my Int $missing-value = 99;
+
+my @empty-output = True, 0, False;
+my @root-output = True, 1, False, True;
+my @lower-higher-output = True, True, True, 3, True, True, True;
+my @multilevel-output = |(True xx 5), True, True, True, True, True, 5;
+my @missing-output = False, 1, True;
+my @duplicate-output = True, True, True, True, 3, True, True, True;
+my @ordered-output = |(True xx 5), 5, True, True, True, True, True, False;
+
+my @cases = (
+    [
+        'create empty',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            [$tree.is-empty, $tree.size, $tree.contains($root-value)]
+        },
+        @empty-output,
+    ],
+    [
+        'insert the root',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            [$tree.insert($root-value), $tree.size, $tree.is-empty,
+                $tree.contains($root-value)]
+        },
+        @root-output,
+    ],
+    [
+        'insert lower and higher',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            [
+                $tree.insert($root-value),
+                $tree.insert($lower-value),
+                $tree.insert($higher-value),
+                $tree.size,
+                $tree.contains($root-value),
+                $tree.contains($lower-value),
+                $tree.contains($higher-value),
+            ]
+        },
+        @lower-higher-output,
+    ],
+    [
+        'multilevel branches',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            my @values = $root-value, $lower-value, $higher-value,
+                $lower-leaf-value, $middle-leaf-value;
+            my @inserted = @values.map({ $tree.insert($_) });
+            [|@inserted, |@values.map({ $tree.contains($_) }), $tree.size]
+        },
+        @multilevel-output,
+    ],
+    [
+        'missing value in a nonempty tree',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            $tree.insert($root-value);
+            [$tree.contains($missing-value), $tree.size,
+                $tree.contains($root-value)]
+        },
+        @missing-output,
+    ],
+    [
+        'idempotent duplicate',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            my @inserted = ($root-value, $lower-value, $higher-value,
+                $lower-value).map({ $tree.insert($_) });
+            [|@inserted, $tree.size, $tree.contains($root-value),
+                $tree.contains($lower-value), $tree.contains($higher-value)]
+        },
+        @duplicate-output,
+    ],
+    [
+        'ordered insertions',
+        -> {
+            my BinaryTree $tree = BinaryTree.new;
+            my @values = $lower-leaf-value, $lower-value, $middle-leaf-value,
+                $root-value, $higher-value;
+            my @inserted = @values.map({ $tree.insert($_) });
+            [|@inserted, $tree.size, |@values.map({ $tree.contains($_) }),
+                $tree.contains($missing-value)]
+        },
+        @ordered-output,
+    ],
+);
+
+sub assert-binary-tree-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "BinaryTree should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'BinaryTree operations', {
+    plan 7;
+    assert-binary-tree-cases();
+};

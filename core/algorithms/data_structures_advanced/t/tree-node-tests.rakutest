@@ -1,0 +1,96 @@
+use Test;
+
+use lib 'lib';
+use DataStructuresAdvanced;
+
+# Null case omitted: set-left/set-right accept an absent TreeNode (Nil), which is
+# the absent link; the constructor requires an Int, so a null value is not representable.
+# The immutable adaptation does not apply: TreeNode is mutable in Raku.
+
+my Int $parent-value = 10;
+my Int $left-value = 20;
+my Int $right-value = 30;
+
+my @creation-output = $parent-value;
+my @initial-links-output = False, False;
+my @link-output = $left-value, $right-value;
+my @traversal-output = $left-value, $right-value, False, False, False, False;
+my @unlink-output = $parent-value, $right-value, False, $parent-value, False, False;
+
+my @cases = (
+    [
+        'create a tree node',
+        -> {
+            my TreeNode $parent = TreeNode.new(value => $parent-value);
+            [$parent.get-value]
+        },
+        @creation-output,
+    ],
+    [
+        'absent initial links',
+        -> {
+            my TreeNode $parent = TreeNode.new(value => $parent-value);
+            [$parent.get-left.defined, $parent.get-right.defined]
+        },
+        @initial-links-output,
+    ],
+    [
+        'link two children',
+        -> {
+            my TreeNode $parent = TreeNode.new(value => $parent-value);
+            $parent.set-left(TreeNode.new(value => $left-value));
+            $parent.set-right(TreeNode.new(value => $right-value));
+            [$parent.get-left.get-value, $parent.get-right.get-value]
+        },
+        @link-output,
+    ],
+    [
+        'traverse each link',
+        -> {
+            my TreeNode $parent = TreeNode.new(value => $parent-value);
+            $parent.set-left(TreeNode.new(value => $left-value));
+            $parent.set-right(TreeNode.new(value => $right-value));
+            my TreeNode $left = $parent.get-left;
+            my TreeNode $right = $parent.get-right;
+            [
+                $left.get-value,
+                $right.get-value,
+                $left.get-left.defined,
+                $left.get-right.defined,
+                $right.get-left.defined,
+                $right.get-right.defined,
+            ]
+        },
+        @traversal-output,
+    ],
+    [
+        'unlink children',
+        -> {
+            my TreeNode $parent = TreeNode.new(value => $parent-value);
+            $parent.set-left(TreeNode.new(value => $left-value));
+            $parent.set-right(TreeNode.new(value => $right-value));
+            $parent.set-left(TreeNode);
+            my @after-left = $parent.get-value, $parent.get-right.get-value,
+                $parent.get-left.defined;
+            $parent.set-right(TreeNode);
+            [|@after-left, $parent.get-value, $parent.get-left.defined,
+                $parent.get-right.defined]
+        },
+        @unlink-output,
+    ],
+);
+
+sub assert-tree-node-cases() {
+    for @cases -> $case {
+        my ($description, $operation, $expected) = |$case;
+        is-deeply($operation(), $expected,
+            "TreeNode should satisfy $description");
+    }
+}
+
+plan 1;
+
+subtest 'TreeNode operations', {
+    plan 5;
+    assert-tree-node-cases();
+};
