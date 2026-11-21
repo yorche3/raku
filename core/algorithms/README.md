@@ -12,6 +12,7 @@ Los módulos de esta fase trabajan sobre **arrays mutables localmente**: las fun
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `prove6 -l t/` + módulo Test | 3 | ✅ |
 | [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `prove6` + módulo Test | 4 | ✅ |
+| [`data_structures_advanced/`](data_structures_advanced/) | [07_Data_Structures_Advanced](https://yorche3.github.io/programming_languages/core/algorithms/07_Data_Structures_Advanced/) | `prove6` + módulo Test | 3 | ✅ |
 
 ---
 
@@ -26,14 +27,23 @@ algorithms/
 │   │   └── naive_sort_tests.rakutest# 3 subtests × 7 casos
 │   ├── .gitignore                   # Ignora .precomp/
 │   └── README.md
-└── data_structures_basics/          # 06_Data_Structures_Basics
+├── data_structures_basics/          # 06_Data_Structures_Basics
+│   ├── lib/
+│   │   └── DataStructuresBasics.rakumod # 4 clases del contrato (Node, LinkedList, Stack, Queue)
+│   ├── t/
+│   │   ├── node-tests.rakutest
+│   │   ├── linked-list-tests.rakutest
+│   │   ├── stack-tests.rakutest
+│   │   └── queue-tests.rakutest
+│   ├── .gitignore                   # Ignora .precomp/
+│   └── README.md
+└── data_structures_advanced/        # 07_Data_Structures_Advanced
     ├── lib/
-    │   └── DataStructuresBasics.rakumod # 4 clases del contrato (Node, LinkedList, Stack, Queue)
+    │   └── DataStructuresAdvanced.rakumod # 5 clases del contrato (Node, TreeNode, BinaryTree, GraphNode, Graph)
     ├── t/
-    │   ├── node-tests.rakutest
-    │   ├── linked-list-tests.rakutest
-    │   ├── stack-tests.rakutest
-    │   └── queue-tests.rakutest
+    │   ├── binary-tree-tests.rakutest
+    │   ├── graph-tests.rakutest
+    │   └── tree-node-tests.rakutest
     ├── .gitignore                   # Ignora .precomp/
     └── README.md
 ```
@@ -73,6 +83,10 @@ prove6 -l t/
 
 # Data Structures Basics Tests
 cd ../data_structures_basics
+prove6
+
+# Data Structures Advanced Tests
+cd ../data_structures_advanced
 prove6
 ```
 
